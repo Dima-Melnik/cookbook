@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="../styles/style.css">
+</head>
+<body>
+    <h1>Recipe</h1>
+    <button id="addButton">Add recipe</button>
+    <ul id="recipeList"></ul>
+
+    <form id="addRecipeForm" class="hidden">
+        <button type="button" class="close-btn">x</button>
+        <input id="titleInput" type="text" name="title" placeholder="Title...">
+        <input id="descriptionInput" type="text" name="description" placeholder="Description...">
+        <button type="submit">Save</button>
+    </form>
+
+    <div id="modalRecipeOverlay">
+        <div id="modalRecipe">
+            <button type="button" id="closeModalRecipe">x</button>
+            <h3 id="modalRecipeTitle"></h3>
+            <p id="modalRecipeDesc"></p>
+         </div>
+    </div>
+
+
+    <script src="../scripts/script.js"></script>
+</body>
+</html>
