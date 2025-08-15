@@ -13,21 +13,21 @@ import (
 
 func Register(c *gin.Context) {
 	var user model.User
-	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
+	if !utils.BindJSON(c, &user) {
 		return
 	}
 
 	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
+		utils.SendResponseError(c, http.StatusInternalServerError, "", err.Error())
 		return
 	}
 
 	user.Password = hashedPassword
 
 	if err := db.DB.Create(&user).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
+		utils.SendLog("UserHandlers", "Register", err)
+		utils.SendResponseError(c, http.StatusInternalServerError, c.Request.Method, err.Error())
 		return
 	}
 
@@ -38,13 +38,13 @@ func Login(c *gin.Context) {
 	var user model.User
 	var input model.User
 
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
+	if !utils.BindJSON(c, &input) {
 		return
 	}
 
 	if err := db.DB.Where("email ILIKE ?", input.Email).First(&user).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
+		utils.SendLog("UserHandlers", "Login", err)
+		utils.SendResponseError(c, http.StatusInternalServerError, c.Request.Method, err.Error())
 		return
 	}
 
@@ -55,12 +55,11 @@ func Login(c *gin.Context) {
 
 	token, err := auth.GenerateToken(user.ID)
 	if err != nil {
+		utils.SendLog("UserHandlers", "GenerateToken", err)
+		utils.SendResponseError(c, http.StatusInternalServerError, "", err.Error())
 		fmt.Println("Помилка генерації токена:", err)
-		c.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
-
-	fmt.Println("Згенерований токен:", token)
 
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
@@ -70,9 +69,10 @@ func GetAllUsers(c *gin.Context) {
 
 	result := db.DB.Find(&users)
 	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, result.Error)
+		utils.SendLog("UserHandlers", "GetAllUsers", result.Error)
+		utils.SendResponseError(c, http.StatusInternalServerError, c.Request.Method, result.Error)
 		return
 	}
 
-	c.JSON(http.StatusOK, users)
+	utils.SendResponseJSON(c, http.StatusOK, "", result)
 }

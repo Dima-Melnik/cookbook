@@ -16,6 +16,7 @@ func (h *Handler) GetAllRecipes(c *gin.Context) {
 
 	result, err := h.cookService.GetAll()
 	if err != nil {
+		utils.SendLog("CookBookHandler", "GetAllRecipes handler", err)
 		utils.SendResponseError(c, http.StatusInternalServerError, c.Request.Method, err.Error())
 		return
 	}
@@ -26,11 +27,13 @@ func (h *Handler) GetAllRecipes(c *gin.Context) {
 func (h *Handler) GetRecipeByID(c *gin.Context) {
 	id, err := utils.CheckCorrectID(c)
 	if err != nil {
+		utils.SendLog("Handler", "CheckCorrectID [GetRecipeByID]", err)
 		return
 	}
 
 	result, err := h.cookService.GetByID(id)
 	if err != nil {
+		utils.SendLog("CookBookHandler", "GetRecipeByID handler", err)
 		utils.SendResponseError(c, http.StatusInternalServerError, c.Request.Method, err.Error())
 		return
 	}
@@ -57,6 +60,7 @@ func (h *Handler) CreateRecipe(c *gin.Context) {
 	}
 
 	if err := h.cookService.Create(&recipe); err != nil {
+		utils.SendLog("CookBookHandler", "CreateRecipe handler", err)
 		utils.SendResponseError(c, http.StatusInternalServerError, c.Request.Method, err.Error())
 		return
 	}
@@ -67,6 +71,7 @@ func (h *Handler) CreateRecipe(c *gin.Context) {
 func (h *Handler) UpdateRecipe(c *gin.Context) {
 	id, err := utils.CheckCorrectID(c)
 	if err != nil {
+		utils.SendLog("Handler", "CheckCorrectID [UpdateRecipe]", err)
 		return
 	}
 
@@ -82,6 +87,7 @@ func (h *Handler) UpdateRecipe(c *gin.Context) {
 	}
 
 	if err := h.cookService.Update(&recipe, id); err != nil {
+		utils.SendLog("CookBookHandler", "UpdateRecipe handler", err)
 		utils.SendResponseError(c, http.StatusInternalServerError, c.Request.Method, err.Error())
 		return
 	}
@@ -96,6 +102,7 @@ func (h *Handler) DeleteRecipe(c *gin.Context) {
 	}
 
 	if err := h.cookService.Delete(id); err != nil {
+		utils.SendLog("CookBookHandler", "UpdateRecipe handler", err)
 		utils.SendResponseError(c, http.StatusInternalServerError, c.Request.Method, err.Error())
 		return
 	}

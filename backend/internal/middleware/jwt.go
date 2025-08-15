@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"cook_book/backend/internal/auth"
+	"cook_book/backend/internal/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,6 +22,7 @@ func JWTMiddleware() gin.HandlerFunc {
 
 		claims, err := auth.VerifyToken(tokenString)
 		if err != nil {
+			utils.SendLog("JWT", "JWTMiddleware [VerifyToken]", err)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}

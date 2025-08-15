@@ -17,6 +17,7 @@ func CheckCorrectID(c *gin.Context) (uint, error) {
 			return uint(id), err
 		}
 
+		SendLog("ID", "CheckCorrectID", err)
 		SendResponseError(c, http.StatusBadRequest, "", err.Error())
 		return uint(id), err
 	}

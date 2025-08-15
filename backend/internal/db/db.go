@@ -3,6 +3,7 @@ package db
 import (
 	"cook_book/backend/config"
 	"cook_book/backend/internal/model"
+	"cook_book/backend/internal/utils"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -17,10 +18,12 @@ func Connect() {
 
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
+		utils.SendLog("DB [Connect]", "gorm.Open", err)
 		panic(err)
 	}
 
 	if err = DB.AutoMigrate(&model.CookBook{}, &model.User{}); err != nil {
+		utils.SendLog("DB [Connect]", "DB.AutoMigrate", err)
 		panic(err)
 	}
 }
@@ -28,10 +31,12 @@ func Connect() {
 func Close() {
 	db, err := DB.DB()
 	if err != nil {
+		utils.SendLog("DB [Close]", "DB.DB", err)
 		log.Fatal(err)
 	}
 
 	if err := db.Close(); err != nil {
+		utils.SendLog("DB [Close]", "db.Close", err)
 		log.Fatal(err)
 	}
 }

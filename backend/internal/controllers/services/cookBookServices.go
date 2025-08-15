@@ -3,6 +3,7 @@ package services
 import (
 	r "cook_book/backend/internal/controllers/repositories"
 	"cook_book/backend/internal/model"
+	"cook_book/backend/internal/utils"
 )
 
 type CookBookServices interface {
@@ -30,6 +31,7 @@ func NewCookBookServices(s *CookBookServiceConfig) CookBookServices {
 func (s *cookBookServices) GetAll() ([]*model.CookBook, error) {
 	result, err := s.repo.GetAll()
 	if err != nil {
+		utils.SendLog("CookBookServices", "GetAll service", err)
 		return nil, err
 	}
 
@@ -39,6 +41,7 @@ func (s *cookBookServices) GetAll() ([]*model.CookBook, error) {
 func (s *cookBookServices) GetByID(id uint) (*model.CookBook, error) {
 	result, err := s.repo.GetByID(id)
 	if err != nil {
+		utils.SendLog("CookBookServices", "GetByID service", err)
 		return nil, err
 	}
 
@@ -47,6 +50,7 @@ func (s *cookBookServices) GetByID(id uint) (*model.CookBook, error) {
 
 func (s *cookBookServices) Create(recipe *model.CookBook) error {
 	if err := s.repo.Create(recipe); err != nil {
+		utils.SendLog("CookBookServices", "Create service", err)
 		return err
 	}
 
@@ -55,6 +59,7 @@ func (s *cookBookServices) Create(recipe *model.CookBook) error {
 
 func (s *cookBookServices) Update(recipe *model.CookBook, id uint) error {
 	if err := s.repo.Update(recipe, id); err != nil {
+		utils.SendLog("CookBookServices", "Update service", err)
 		return err
 	}
 
@@ -63,6 +68,7 @@ func (s *cookBookServices) Update(recipe *model.CookBook, id uint) error {
 
 func (s *cookBookServices) Delete(id uint) error {
 	if err := s.repo.Delete(id); err != nil {
+		utils.SendLog("CookBookServices", "Delete service", err)
 		return err
 	}
 
